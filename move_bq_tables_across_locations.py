@@ -47,7 +47,7 @@ with DAG(
     catchup=False,  # Avoid backfilling
 ) as dag:
     
-    tables=read_tables_to_move('table_to_move.yaml')
+    tables=read_tables_to_move('config_file.yaml')  # TODO, gdzieś w zmiennych dać tą nazwę oraz wrzucenie w odpowiednie miejsce na data
 
     start_task = EmptyOperator(
         task_id='start'
