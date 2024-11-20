@@ -7,5 +7,5 @@ tarrform init
 terraform apply -var="project_id=$PROJECT_ID"
 
 # Yes
-# Create tables in BQ with artificial data in US dataset.
+# Create tables in BQ with artificial data in dataset.
 sh create_tables_script.sh
