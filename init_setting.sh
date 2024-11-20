@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Set variable PROJECT_ID to current GCP project.
 PROJECT_ID="$(gcloud config list --format="value(core.project)")"
 
@@ -6,10 +8,13 @@ cd terraform
 tarrform init
 terraform apply -var="project_id=$PROJECT_ID"
 
-# Yes
+# Yes - to documentation!
+
+# Extract output from Terraform and transform it to map.
+DATASET_IDS=$( terraform output dataset_ids_map) 
+cd ..
+sh helper_scripts/map_dataset.sh $DATASET_IDS
+
 # Create tables in BQ with artificial data in dataset.
-sh create_tables_script.sh
-
-DATASET_ID_1=$(terraform output dataset_id_1)
-DATASET_ID_2=$(terraform output dataset_id_2)
-
+DATASET_FROM=${DATASET_IDS_MAP[US]}
+sh helper_scripts/create_tables.sh $PROJECT_ID $DATASET_FROM
