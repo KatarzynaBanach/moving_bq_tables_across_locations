@@ -27,3 +27,19 @@ resource "google_bigquery_dataset" "dataset" {
   dataset_id      = "dataset_${lower(each.value)}"
   location        = each.value
 }
+
+resource "google_composer_environment" "composer-env-1" {
+  name   = "composer-env"
+  region = "us-central1"
+  config {
+
+    software_config {
+      image_version = "composer-3-airflow-2"
+    }
+    environment_size = "ENVIRONMENT_SIZE_SMALL"
+
+    # node_config {
+    #   service_account = google_service_account.test.name
+    # }
+  }
+}
