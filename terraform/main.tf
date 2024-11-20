@@ -7,36 +7,37 @@ terraform {
 }
 
 provider "google" {
-  project = "gifted-object-406811"
+  project = var.project_id
   region  = "us-central1"
   zone    = "us-central1-a"
 }
 
-
-# TRY:
-
+# Crete storage buckets for two locations.
 resource "google_storage_bucket" "bucket" {
   for_each  = toset( ["EU", "US"] )
-  name      = "bucket_bq_data_${each.value}"
+  name      = "bq_data_${each.value}_${var.project_id}"
 
   location  = each.value
   storage_class = "STANDARD"
 }
 
+# Crete BigQuery datasets for two locations.
 resource "google_bigquery_dataset" "dataset" {
   for_each  = toset( ["EU", "US"] )
-  dataset_id      = "dataset${each.value}"
+  dataset_id      = "dataset_${each.value}"
   location        = each.value
 }
 
+# Create storage bucket to store terraform state file remotely. 
 resource "google_storage_bucket" "bucket_for_state" {
-  name        = "qwiklabs-gcp-00-081e872498d7"
-  location    = "US" # Replace with EU for Europe region
+  name        = "terraform_${var.project_id}"
+  location    = "US"
   uniform_bucket_level_access = true
 }
+
 terraform {
   backend "gcs" {
-    bucket  = "qwiklabs-gcp-00-081e872498d7"
+    bucket  = google_storage_bucket.bucket_for_state.name
     prefix  = "terraform/state"
   }
 }
@@ -45,26 +46,14 @@ terraform {
 
 # terraform init -migrate-state
 
+# resource "google_composer_environment" "example_environment" {
+#   name = "example-environment"
 
+#   config {
 
-resource "google_bigquery_dataset" "dataset_us" {
-  dataset_id                  = "dataset_us"
-  location                    = "US"
-}
+#     software_config {
+#       image_version = "composer-3-airflow-2.9.3-build.6"
+#     }
 
-resource "google_bigquery_dataset" "dataset_eu" {
-  dataset_id                  = "dataset_eu"
-  location                    = "EU"
-}
-
-resource "google_composer_environment" "example_environment" {
-  name = "example-environment"
-
-  config {
-
-    software_config {
-      image_version = "composer-3-airflow-2.9.3-build.6"
-    }
-
-  }
-}
+#   }
+# }
