@@ -18,3 +18,5 @@ sh helper_scripts/map_dataset.sh $DATASET_IDS
 # Create tables in BQ with artificial data in dataset.
 DATASET_FROM=${DATASET_IDS_MAP[US]}
 sh helper_scripts/create_tables.sh $PROJECT_ID $DATASET_FROM
+
+echo 'Resouces created.'
